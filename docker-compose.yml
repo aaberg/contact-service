@@ -1,0 +1,27 @@
+version: '3.9'
+
+services: 
+  grains-persistence-database:
+    image: 'postgres:latest'
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    networks:
+      contact-app-network:
+  
+  view-projections-database:
+    image: 'postgres:latest'
+    ports:
+      - 15433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    networks:
+      contact-app-network:
+
+networks:
+  contact-app-network:
+    name: contacts
+    driver: bridge

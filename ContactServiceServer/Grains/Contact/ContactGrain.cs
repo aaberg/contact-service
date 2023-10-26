@@ -1,12 +1,14 @@
 ﻿using ContactServiceGrainInterfaces.Contact;
+using ContactServiceGrainInterfaces.Tenant;
 using ContactServiceServer.DataAccess.Contact;
+using ContactServiceServer.Exceptions;
 
 namespace ContactServiceServer.Grains.Contact;
 
 public class ContactGrain : Grain, IContactGrain
 {
     private readonly IContactAccess _contactAccess;
-    private ContactState? _state = null;
+    private ContactState? _state;
     
     public ContactGrain(IContactAccess contactAccess)
     {
@@ -15,58 +17,110 @@ public class ContactGrain : Grain, IContactGrain
 
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
-        _state = await _contactAccess.LoadState(this.GetPrimaryKey()); 
+        _state = await _contactAccess.LoadStateAsync(this.GetPrimaryKey()); 
         
         await base.OnActivateAsync(cancellationToken);
     }
 
-    public Task RegisterContact(string name)
+    public async Task RegisterContact(ITenantGrain ownerTenant, string name)
     {
-        throw new NotImplementedException();
+        if (_state != null)
+        {
+            throw new DomainException("Contact already registered");
+        }
+
+        _state = new ContactState
+        {
+            OwnerTenantId = ownerTenant.GetPrimaryKey(),
+            Name = name
+        };
+        await SaveStateAsync();
     }
 
-    public Task SetProfilePictureUrl(string url)
+    public async Task SetProfilePictureUrl(string url)
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        _state = _state! with
+        {
+            ProfilePictureUrl = url
+        };
+        await SaveStateAsync();
     }
 
     public Task<string> GetName()
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        return Task.FromResult(_state!.Name);
     }
 
-    public Task<string> GetProfilePictureUrl()
+    public Task<string?> GetProfilePictureUrl()
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        return Task.FromResult(_state!.ProfilePictureUrl);
     }
 
-    public Task SetCompany(Organization company)
+    public async Task SetCompany(Organization company)
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        _state = _state! with
+        {
+            Company = company
+        };
+        await SaveStateAsync();
     }
 
     public Task<Organization> GetCompany()
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        return Task.FromResult(_state!.Company!);
     }
 
-    public Task AddEmail(EmailAddress email)
+    public async Task AddEmail(EmailAddress email)
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        _state = _state! with
+        {
+            Emails = _state!.Emails.Append(email).ToArray()
+        };
+        await SaveStateAsync();
     }
 
     public Task<EmailAddress[]> ListEmails()
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        return Task.FromResult(_state!.Emails);
     }
 
-    public Task AddPhone(Phone phone)
+    public async Task AddPhone(Phone phone)
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        _state = _state! with
+        {
+            PhoneNumbers = _state!.PhoneNumbers.Append(phone).ToArray()
+        };
+        await SaveStateAsync();
     }
 
     public Task<Phone[]> ListPhones()
     {
-        throw new NotImplementedException();
+        ThrowIfNotRegistered();
+        return Task.FromResult(_state!.PhoneNumbers);
+    }
+    
+    private void ThrowIfNotRegistered()
+    {
+        if (_state == null)
+        {
+            throw new DomainException("Error accessing contact state because it is null. Check that the contact is registered");
+        }
+    }
+    
+    private async Task SaveStateAsync()
+    {
+        if (_state == null)
+        {
+            throw new DomainException("Cant save Contact without state");
+        }
+        await _contactAccess.SaveStateAsync(this.GetPrimaryKey(), _state);
     }
 }

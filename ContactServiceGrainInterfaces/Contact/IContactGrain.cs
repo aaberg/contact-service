@@ -1,12 +1,14 @@
-﻿namespace ContactServiceGrainInterfaces.Contact;
+﻿using ContactServiceGrainInterfaces.Tenant;
+
+namespace ContactServiceGrainInterfaces.Contact;
 
 public interface IContactGrain : IGrainWithGuidKey
 {
-    Task RegisterContact(string name);
+    Task RegisterContact(ITenantGrain ownerTenant, string name);
     Task SetProfilePictureUrl(string url);
 
     Task<string> GetName();
-    Task<string> GetProfilePictureUrl();
+    Task<string?> GetProfilePictureUrl();
 
     Task SetCompany(Organization company);
     Task<Organization> GetCompany();

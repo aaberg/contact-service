@@ -10,6 +10,7 @@ public static class ContactMapperExtension
         return new ContactEntry
         {
             Id = contactId,
+            OwnerTenantId = c.OwnerTenantId,
             Name = c.Name,
             ProfilePictureUrl = c.ProfilePictureUrl,
             Company = c.Company == null
@@ -29,6 +30,7 @@ public static class ContactMapperExtension
         return new ContactState
         {
             Name = c.Name,
+            OwnerTenantId = c.OwnerTenantId,
             ProfilePictureUrl = c.ProfilePictureUrl,
             Company = c.Company == null
                 ? null

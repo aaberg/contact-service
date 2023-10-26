@@ -5,21 +5,26 @@ namespace ContactServiceServer.DataAccess.Contact;
 
 public interface IContactAccess
 {
-    Task SaveState(Guid contactId, ContactState contactState);
-    Task<ContactState?> LoadState(Guid contactId);
+    Task SaveStateAsync(Guid contactId, ContactState contactState);
+    Task<ContactState?> LoadStateAsync(Guid contactId);
 }
 
 public class ContactAccess : IContactAccess
 {
     private readonly IDocumentStore _documentStore;
+    
+    public ContactAccess(IDocumentStore documentStore)
+    {
+        _documentStore = documentStore;
+    }
 
-    public async Task SaveState(Guid contactId, ContactState contactState)
+    public async Task SaveStateAsync(Guid contactId, ContactState contactState)
     {
         await using var session = _documentStore.LightweightSession();
         session.Store(contactState.Map(contactId));
     }
 
-    public async Task<ContactState?> LoadState(Guid contactId)
+    public async Task<ContactState?> LoadStateAsync(Guid contactId)
     {
         await using var session = _documentStore.QuerySession();
         var contactEntry = await session.LoadAsync<ContactEntry>(contactId);
@@ -33,7 +38,8 @@ public static class ContactRegistrationExtension
     {
         options.Schema
             .For<ContactEntry>()
-            .DatabaseSchemaName("contact");
+            .DatabaseSchemaName("contact")
+            .Index(entry => entry.OwnerTenantId);
 
         return options;
     }

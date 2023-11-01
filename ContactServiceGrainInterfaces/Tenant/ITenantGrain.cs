@@ -1,4 +1,5 @@
-﻿using ContactServiceGrainInterfaces.User;
+﻿using ContactServiceGrainInterfaces.Contact;
+using ContactServiceGrainInterfaces.User;
 
 namespace ContactServiceGrainInterfaces.Tenant;
 
@@ -10,5 +11,9 @@ public interface ITenantGrain : IGrainWithGuidKey
     Task<TenantType> GetTenantType();
 
     Task GiveUserAccess(IUserGrain user);
+    Task<IUserGrain[]> ListUsers();
+    
+    Task<IContactGrain> CreateContact(string name);
+    Task<IContactGrain[]> ListContacts();
 }
 

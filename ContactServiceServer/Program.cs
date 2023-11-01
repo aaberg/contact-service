@@ -54,6 +54,7 @@ hostBuilder
             {
                 services
                     .AddSingleton<ITenantAccess, TenantAccess>()
+                    .AddSingleton<IContactAccess, ContactAccess>()
                     .AddMarten(options =>
                     {
                         options

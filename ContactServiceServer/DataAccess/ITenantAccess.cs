@@ -58,7 +58,6 @@ public static class TenantAccessRegistrationExtension
     {
         options.Schema
             .For<TenantUserRelationEntry>()
-            .DatabaseSchemaName("tenantuserrelation")
             .Index(relation => relation.TenantId)
             .Index(relation => relation.UserId);
 

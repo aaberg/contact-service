@@ -1,6 +1,7 @@
 ﻿namespace ContactServiceGrainInterfaces.Contact;
 
+[GenerateSerializer]
 public record Phone(string PhoneNumber)
 {
-    public string? Label { get; init; }
+    [Id(0)] public string? Label { get; init; }
 }

@@ -1,5 +1,4 @@
-﻿using ContactServiceGrainInterfaces;
-using ContactServiceGrainInterfaces.Tenant;
+﻿using ContactServiceGrainInterfaces.Tenant;
 using ContactServiceGrainInterfaces.User;
 using ContactServiceServer.DataAccess;
 using ContactServiceServer.Grains.State;

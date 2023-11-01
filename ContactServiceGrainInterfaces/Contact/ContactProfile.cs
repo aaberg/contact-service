@@ -1,8 +1,9 @@
 ﻿namespace ContactServiceGrainInterfaces.Contact;
 
+[GenerateSerializer]
 public record ContactProfile(string Name)
 {
-    public string? ProfileImageUrl { get; init; }
+    [Id(0)] public string? ProfileImageUrl { get; init; }
 }
 
 

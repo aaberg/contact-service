@@ -1,7 +1,9 @@
 ﻿namespace ContactServiceGrainInterfaces.Contact;
 
+[GenerateSerializer]
 public record Organization
 {
-    public string? Company { get; init; }
-    public string? JobTitle { get; init; }
+    [Id(0)] public string? Company { get; init; }
+    
+    [Id(1)] public string? JobTitle { get; init; }
 }

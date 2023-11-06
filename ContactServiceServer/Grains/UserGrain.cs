@@ -37,4 +37,20 @@ public class UserGrain : Grain<UserState>, IUserGrain
         var relations = await _tenantAccess.GetUserRelations(this.GetPrimaryKeyString());
         return relations.Select(relation => GrainFactory.GetGrain<ITenantGrain>(relation.TenantId)).ToArray();
     }
+
+    public Task SelectTenant(ITenantGrain tenant)
+    {
+        State = State with { SelectedTenantId = tenant.GetPrimaryKey() };
+        return WriteStateAsync();
+    }
+
+    public Task<ITenantGrain?> GetSelectedTenant()
+    {
+        if (State.SelectedTenantId is null)
+        {
+            return Task.FromResult<ITenantGrain?>(null);
+        }
+
+        return Task.FromResult(GrainFactory.GetGrain<ITenantGrain>(State.SelectedTenantId.Value))!; 
+    }
 }

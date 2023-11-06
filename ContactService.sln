@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactServiceGrainInterfac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactServiceCLI", "ContactServiceCLI\ContactServiceCLI.csproj", "{03E56ECA-EB60-4E9A-AB52-1B553992EF4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactServiceApp", "ContactServiceApp\ContactServiceApp.csproj", "{B6880999-F7BA-4337-AE19-33743947F02A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{03E56ECA-EB60-4E9A-AB52-1B553992EF4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03E56ECA-EB60-4E9A-AB52-1B553992EF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03E56ECA-EB60-4E9A-AB52-1B553992EF4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6880999-F7BA-4337-AE19-33743947F02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6880999-F7BA-4337-AE19-33743947F02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6880999-F7BA-4337-AE19-33743947F02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6880999-F7BA-4337-AE19-33743947F02A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+@inject ILogger<MainLayout> Logger
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick='DrawerToggle' />
+        Contact Manager
+        <MudButton @onclick="DrawerToggle">other button</MudButton>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen">
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    private bool _drawerOpen = true;
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+        Logger.LogInformation(@"Drawer is now: " + (_drawerOpen ? "Open" : "Closed"));
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Logger.LogInformation("Layout component initialized.");
+    }
+}
+

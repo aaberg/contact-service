@@ -1,0 +1,77 @@
+﻿@page "/"
+@using ContactServiceApp.Identity
+@using System.Security.Claims
+@using ContactServiceGrainInterfaces.User
+
+@inject AuthenticationService AuthenticationService
+@inject IClusterClient ClusterClient
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<AuthorizeView>
+    <Authorized>
+        <p>Hello, @context.User.Identity?.Name</p>
+        
+        @if (_loadingTenants)
+        {
+            <p>Loading tenants</p>
+        }
+        else
+        {
+            <ul>
+                @foreach(var tenant in _tenants)
+                {
+                    <li>@tenant</li>
+                }
+            </ul>
+        }
+        
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized</p>
+        <MudButton @onclick="Login">Log in</MudButton>
+    </NotAuthorized>
+
+</AuthorizeView>
+
+@code
+{
+    private List<string> _tenants = new();
+    private bool _loadingTenants = true;
+    
+    private void Login()
+    {
+        
+        var identity = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, "John Doe"),
+            new Claim(ClaimTypes.Email, "john.doe@somerandommaildomain.org"),
+            new Claim("UserId", "user:1234") 
+        }, "Custom Authentication Type");
+
+        AuthenticationService.CurrentUser = new ClaimsPrincipal(identity);
+
+        _ = LoadTenants();
+    }
+
+    private async Task LoadTenants()
+    {
+        _loadingTenants = true;
+        var userId = AuthenticationService.CurrentUser.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        if (userId == null) return;
+        
+        var userGrain = ClusterClient.GetGrain<IUserGrain>(userId);
+        var tenantGrainNameTasks = (await userGrain.GetTenantsWithAccess()).Select(tenantGrain => tenantGrain.GetName()).ToList();
+        await Task.WhenAll(tenantGrainNameTasks);
+
+        _loadingTenants = false;
+
+        _tenants = tenantGrainNameTasks.Select(task => task.Result).ToList();
+        
+        StateHasChanged();
+    } 
+}

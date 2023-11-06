@@ -9,4 +9,7 @@ public interface IUserGrain : IGrainWithStringKey
     Task<UserProfile> GetUserProfile();
 
     Task<ITenantGrain[]> GetTenantsWithAccess();
+    
+    Task SelectTenant(ITenantGrain tenant);
+    Task<ITenantGrain?> GetSelectedTenant();
 }

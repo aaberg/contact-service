@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using ContactServiceApp.Identity
 @using System.Security.Claims
+@using ContactServiceApp.Components.Layout
 @using ContactServiceGrainInterfaces.User
+@layout SimpleLayout
 
 @inject AuthenticationService AuthenticationService
 @inject IClusterClient ClusterClient
@@ -10,39 +12,24 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+Welcome to the awesome Contact Network Builder!
 
 <AuthorizeView>
     <Authorized>
         <p>Hello, @context.User.Identity?.Name</p>
         
-        @if (_loadingTenants)
-        {
-            <p>Loading tenants</p>
-        }
-        else
-        {
-            <ul>
-                @foreach(var tenant in _tenants)
-                {
-                    <li>@tenant</li>
-                }
-            </ul>
-        }
+        <MudButton Href="/network" Variant="Variant.Filled" Color="Color.Primary">View my network</MudButton>
         
     </Authorized>
     <NotAuthorized>
         <p>You are not authorized</p>
-        <MudButton @onclick="Login">Log in</MudButton>
+        <MudButton @onclick="Login" Variant="Variant.Filled" Color="Color.Primary" >Log in</MudButton>
     </NotAuthorized>
 
 </AuthorizeView>
 
 @code
 {
-    private List<string> _tenants = new();
-    private bool _loadingTenants = true;
-    
     private void Login()
     {
         
@@ -54,24 +41,5 @@ Welcome to your new app.
         }, "Custom Authentication Type");
 
         AuthenticationService.CurrentUser = new ClaimsPrincipal(identity);
-
-        _ = LoadTenants();
     }
-
-    private async Task LoadTenants()
-    {
-        _loadingTenants = true;
-        var userId = AuthenticationService.CurrentUser.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-        if (userId == null) return;
-        
-        var userGrain = ClusterClient.GetGrain<IUserGrain>(userId);
-        var tenantGrainNameTasks = (await userGrain.GetTenantsWithAccess()).Select(tenantGrain => tenantGrain.GetName()).ToList();
-        await Task.WhenAll(tenantGrainNameTasks);
-
-        _loadingTenants = false;
-
-        _tenants = tenantGrainNameTasks.Select(task => task.Result).ToList();
-        
-        StateHasChanged();
-    } 
 }

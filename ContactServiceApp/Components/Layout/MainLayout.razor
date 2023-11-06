@@ -6,14 +6,22 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar>
+    <MudAppBar Elevation="4">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick='DrawerToggle' />
-        Contact Manager
-        <MudButton @onclick="DrawerToggle">other button</MudButton>
+        <MudText Typo="Typo.h5">Contacts</MudText>
+        <MudText Typo="Typo.body1" Class="pt-1 px-4">The network builder</MudText>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
+            <MudNavMenu class="mud-width-full">
+                <MudText Typo="Typo.h6" Class="px-4">Contacts</MudText>
+                <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">The network nuilder</MudText>
+                <MudDivider Class="my-2" />
+                <MudNavLink Href="/contacts" Icon="@Icons.Material.Filled.Contacts">Contact list</MudNavLink>
+                <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+            </MudNavMenu>
+        
     </MudDrawer>
-    <MudMainContent>
+    <MudMainContent Class="px-4">
         @Body
     </MudMainContent>
 </MudLayout>

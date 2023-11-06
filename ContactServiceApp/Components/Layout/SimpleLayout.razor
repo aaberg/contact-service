@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudContainer >
+
+        <MudText Typo="Typo.h1">Contacts</MudText>
+        <MudText Typo="Typo.subtitle1">The network builder</MudText>
+
+
+        <MudMainContent Class="px-4">
+            <MudPaper Class="pa-16 mud-theme-info">
+                @Body
+            </MudPaper>
+        </MudMainContent>
+
+    </MudContainer>
+</MudLayout>
+
+@code {
+
+}

@@ -1,0 +1,51 @@
+﻿@page "/Account/Login"
+@using ContactServiceApp.Components.Layout
+@using System.Security.Claims
+@using ContactServiceApp.Identity
+@layout SimpleLayout
+
+@inject AuthenticationService AuthenticationService
+@inject NavigationManager Navigation
+
+<h3>Login</h3>
+
+<EditForm Model="@UserModel" OnSubmit="@PerformLogin">
+    <MudTextField @bind-Value="@UserModel!.Id" Label="User Id" Variant="Variant.Outlined"></MudTextField>
+    <MudTextField @bind-Value="@UserModel!.Email" Label="Email" Variant="Variant.Outlined"></MudTextField>
+    <MudTextField @bind-Value="@UserModel!.Name" Label="Name" Variant="Variant.Outlined"></MudTextField>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Fake login</MudButton>
+</EditForm>
+
+
+
+@code {
+    
+    public UserInfo? UserModel { get; set; }
+
+    protected override void OnInitialized() => UserModel ??= new UserInfo();
+
+    private void PerformLogin()
+    {
+        var identity = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, UserModel!.Name!),
+            new Claim(ClaimTypes.Email, UserModel!.Email!),
+            new Claim("UserId", UserModel!.Id!) 
+        }, "Custom Authentication Type");
+
+        AuthenticationService.CurrentUser = new ClaimsPrincipal(identity);
+
+        Navigation.NavigateTo("/");
+    }
+
+
+    public class UserInfo
+    {
+        public string? Id { get; set; }
+        public string? Email { get; set; }
+        public string? Name { get; set; }
+    }
+
+    private AuthenticationService _authenticationService;
+}

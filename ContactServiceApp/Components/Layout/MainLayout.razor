@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using ContactServiceApp.Components.Identity
+@inherits LayoutComponentBase
 @inject ILogger<MainLayout> Logger
 
 <MudThemeProvider />
@@ -10,6 +11,8 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick='DrawerToggle' />
         <MudText Typo="Typo.h5">Contacts</MudText>
         <MudText Typo="Typo.body1" Class="pt-1 px-4">The network builder</MudText>
+        <MudSpacer></MudSpacer>
+        <ProfileFab></ProfileFab>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
             <MudNavMenu class="mud-width-full">

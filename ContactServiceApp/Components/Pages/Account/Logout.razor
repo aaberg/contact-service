@@ -1,0 +1,18 @@
+﻿@page "/Account/Logout"
+@using Microsoft.AspNetCore.Identity
+@using ContactServiceApp.Identity
+@inject SignInManager<ApplicationUser> SignInManager;
+@inject NavigationManager NavigationManager;
+
+<LogoutForm id="logout-form"></LogoutForm>
+<script type="text/javascript">
+    document.getElementById("logout-form").submit();
+</script>
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}

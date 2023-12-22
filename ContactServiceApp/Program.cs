@@ -1,6 +1,7 @@
 using ContactServiceApp.Components;
 using ContactServiceApp.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging.Configuration;
 using MudBlazor.Services;
@@ -14,21 +15,29 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies();
 builder.Services
-    .AddScoped<AuthenticationStateProvider, DummyAuthenticationStateProvider>()
-    .AddScoped<AuthenticationService>();
-//     .AddGoogle(options =>
-//     {
-//         options.ClientId = "clientid";
-//         options.ClientSecret = "clientsecret";
-//     });
+    .AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddApplicationCookie();
+
+builder.Services
+    .AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUserStore<ApplicationUser>, UserStore>();
+
+builder.Services
+    .AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+    //.AddScoped<AuthenticationService>();
+
+builder.Services
+    .AddControllers();
 
 builder.Host.UseOrleansClient(clientBuilder =>
 {
     clientBuilder.UseLocalhostClustering();
 });
+
     
 var app = builder.Build();
 
@@ -46,7 +55,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
 
 app.Run();

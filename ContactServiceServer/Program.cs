@@ -1,6 +1,5 @@
 ﻿using ContactServiceServer.DataAccess;
 using ContactServiceServer.DataAccess.Contact;
-using ContactServiceServer.DataAccess.Models;
 using ContactServiceServer.Db;
 using ContactServiceServer.Infrastructure;
 using Marten;

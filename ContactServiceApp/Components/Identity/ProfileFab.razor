@@ -1,0 +1,26 @@
+﻿<AuthorizeView>
+    <Authorized>
+        
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Dense="true">
+            <ActivatorContent>
+                <MudFab Color="Color.Secondary" StartIcon="@Icons.TwoTone.Person" Size="Size.Small"></MudFab>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem
+                    Icon="@Icons.Material.Filled.Logout"
+                    IconColor="Color.Primary"
+                    IconSize="Size.Small"
+                    Target="_top"
+                    Href="/identity/account/logout">Sign out</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+
+    </Authorized>
+    <NotAuthorized>
+        Not authorized
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+}

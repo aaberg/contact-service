@@ -1,11 +1,6 @@
 ﻿@page "/"
-@using ContactServiceApp.Identity
-@using System.Security.Claims
 @using ContactServiceApp.Components.Layout
 @layout SimpleLayout
-
-@inject AuthenticationService AuthenticationService
-@inject IClusterClient ClusterClient
 
 <PageTitle>Home</PageTitle>
 
@@ -21,24 +16,12 @@ Welcome to the awesome Contact Network Builder!
         
     </Authorized>
     <NotAuthorized>
+        <MudButton Target="_top" Href="/network" Variant="Variant.Filled" Color="Color.Primary">View my network</MudButton>
         <p>You are not authorized</p>
-        <MudButton @onclick="Login" Variant="Variant.Filled" Color="Color.Primary" >Log in</MudButton>
+        <MudButton Href="/identity/account/login" Variant="Variant.Filled" Color="Color.Primary">Log in</MudButton>
     </NotAuthorized>
 
 </AuthorizeView>
 
-@code
-{
-    private void Login()
-    {
-        
-        var identity = new ClaimsIdentity(new[]
-        {
-            new Claim(ClaimTypes.Name, "John Doe"),
-            new Claim(ClaimTypes.Email, "john.doe@somerandommaildomain.org"),
-            new Claim("UserId", "user:1234") 
-        }, "Custom Authentication Type");
-
-        AuthenticationService.CurrentUser = new ClaimsPrincipal(identity);
-    }
+@code{
 }

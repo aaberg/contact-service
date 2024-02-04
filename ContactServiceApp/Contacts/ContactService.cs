@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Collections.Immutable;
+using ContactServiceGrainInterfaces.Contact;
 using ContactServiceGrainInterfaces.User;
 
 namespace ContactServiceApp.Contacts;
@@ -23,19 +24,25 @@ public class ContactService
 
         var contactGrains = await tenantGrain.ListContacts();
 
-        var tasks = ArrayPool<Task<string>>.Shared.Rent(contactGrains.Length);
+        var nameTasks = ArrayPool<Task<string>>.Shared.Rent(contactGrains.Length);
+        var phoneTasks = ArrayPool<Task<Phone[]>>.Shared.Rent(contactGrains.Length);
+        var emailTasks = ArrayPool<Task<EmailAddress[]>>.Shared.Rent(contactGrains.Length);
         for (var i = 0; i < contactGrains.Length; i++)
         {
-            tasks[i] = contactGrains[i].GetName();
+            nameTasks[i] = contactGrains[i].GetName();
+            phoneTasks[i] = contactGrains[i].ListPhones();
+            emailTasks[i] = contactGrains[i].ListEmails();
         }
 
-        var contacts = ImmutableArray.CreateBuilder<Contact>(tasks.Length);
+        var contacts = ImmutableArray.CreateBuilder<Contact>(nameTasks.Length);
 
         for (int i = 0; i < contactGrains.Length; i++)
         {
-            var name = await tasks[i];
+            var name = await nameTasks[i];
+            var phones = await phoneTasks[i];
+            var emails = await emailTasks[i];
             
-            contacts.Add(new Contact(name));
+            contacts.Add(new Contact(userId, name, emails, phones));
         }
 
         return contacts.ToImmutable();

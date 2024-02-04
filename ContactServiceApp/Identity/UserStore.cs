@@ -53,7 +53,7 @@ public class UserStore : IUserStore<ApplicationUser>
 
     public Task<ApplicationUser?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        if (userId == "abc:12345")
+        if (userId == "abc:1234")
         {
             var user = new ApplicationUser
             {

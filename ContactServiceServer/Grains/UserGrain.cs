@@ -44,13 +44,21 @@ public class UserGrain : Grain<UserState>, IUserGrain
         return WriteStateAsync();
     }
 
-    public Task<ITenantGrain?> GetSelectedTenant()
+    public async Task<ITenantGrain?> GetSelectedTenant()
     {
         if (State.SelectedTenantId is null)
         {
-            return Task.FromResult<ITenantGrain?>(null);
+            var tenants = await GetTenantsWithAccess();
+
+            foreach (var t in tenants)
+            {
+                if (await t.GetTenantType() == TenantType.Private)
+                {
+                    return t;
+                }
+            }
         }
 
-        return Task.FromResult(GrainFactory.GetGrain<ITenantGrain>(State.SelectedTenantId.Value))!; 
+        return GrainFactory.GetGrain<ITenantGrain>(State.SelectedTenantId.Value)!; 
     }
 }

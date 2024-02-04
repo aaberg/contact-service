@@ -25,15 +25,15 @@ var log = host.Services.GetRequiredService<ILogger<Program>>();
 // create a couple of tenants
 var privateTenantId = Guid.Parse("dde26d78-d64e-4933-92aa-0f69d882d40b");
 var privateTenant = client.GetGrain<ITenantGrain>(privateTenantId);
-await privateTenant.RegisterTenant(TenantType.Private, "Lars Aaberg");
+await privateTenant.RegisterTenant(TenantType.Private, "John Doe");
 
 var orgTenantId = Guid.Parse("8792444c-f42d-496f-abb8-1868cc801848");
 var orgTenant = client.GetGrain<ITenantGrain>(orgTenantId);
 await orgTenant.RegisterTenant(TenantType.Organization, "Senior Consultants AS");
 
 // create a user
-var user = client.GetGrain<IUserGrain>("user:1234");
-await user.RegisterNewUser(new UserProfile("Lars Aaberg", "lars@aaberg.cc"));
+var user = client.GetGrain<IUserGrain>("abc:1234");
+await user.RegisterNewUser(new UserProfile("John Doe", "john.doe@thefancydomain.com"));
 
 // give the user access to the tenants
 await privateTenant.GiveUserAccess(user);

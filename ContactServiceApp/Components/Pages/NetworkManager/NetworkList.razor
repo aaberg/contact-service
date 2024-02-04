@@ -1,8 +1,31 @@
 ﻿@page "/network"
 @using Microsoft.AspNetCore.Authorization
+@using ContactServiceGrainInterfaces.User
+@using ContactServiceApp.Identity
+@using ContactServiceGrainInterfaces.Contact
+@using ContactServiceApp.Contacts
+@using System.Collections.Immutable
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ContactService ContactService
+
 @attribute [Authorize]
 <h3>NetworkList</h3>
 
+@foreach(var contact in _contacts)
+{
+    <div>@contact.Name</div>
+}
+
 @code {
+
+    private ImmutableArray<Contact> _contacts = ImmutableArray<Contact>.Empty;
     
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.ToApplicationUser();
+
+        _contacts = await ContactService.GetAllContacts(user.Id);
+    }
+
 }

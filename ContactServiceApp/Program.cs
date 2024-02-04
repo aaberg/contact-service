@@ -1,4 +1,5 @@
 using ContactServiceApp.Components;
+using ContactServiceApp.Contacts;
 using ContactServiceApp.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -32,6 +33,8 @@ builder.Services
 
 builder.Services
     .AddControllers();
+
+builder.Services.AddScoped<ContactService>();
 
 builder.Host.UseOrleansClient(clientBuilder =>
 {

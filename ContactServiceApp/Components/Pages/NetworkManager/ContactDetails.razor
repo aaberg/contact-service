@@ -1,0 +1,9 @@
+﻿@page "/network/{contactId}"
+<h3>ContactDetails</h3>
+
+<p>@ContactId</p>
+
+@code {
+    [Parameter]
+    public string? ContactId { get; set; }
+}

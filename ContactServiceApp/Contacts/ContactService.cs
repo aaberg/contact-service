@@ -49,4 +49,17 @@ public class ContactService
 
         return contacts.ToImmutable();
     }
+    
+    public async Task<Contact> GetContact(string userId, string contactId)
+    {
+        var contactGrain = _client.GetGrain<IContactGrain>(Guid.Parse( contactId ));
+
+        var contactNameTask = contactGrain.GetName();
+        var contactEmailsTask = contactGrain.ListEmails();
+        var contactPhonesTask = contactGrain.ListPhones();
+
+        await Task.WhenAll([contactNameTask, contactEmailsTask, contactPhonesTask]);
+        
+        return new Contact(contactId, contactNameTask.Result, contactEmailsTask.Result, contactPhonesTask.Result);
+    }
 }

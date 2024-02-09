@@ -1,9 +1,74 @@
 ﻿@page "/network/{contactId}"
+@using ContactServiceApp.Contacts
+@using ContactServiceApp.Identity
+@using ContactServiceGrainInterfaces.Contact
+@inject ContactService ContactService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <h3>ContactDetails</h3>
 
 <p>@ContactId</p>
 
+<MudPaper Class="pa-4 mb-5">
+    <MudText Typo="Typo.h2">@Contact?.Name</MudText>
+    <div class="d-inline-flex">
+        <div class="pr-6">
+            <MudText Typo="Typo.body2">Primary email</MudText>
+            <MudText Typo="Typo.body1">@(Contact?.PrimaryEmail?.Email ?? "-")</MudText>
+        </div>
+        <div class="pl-6">
+            <MudText Typo="Typo.body2">Primary phone</MudText>
+            <MudText Typo="Typo.body1">@(Contact?.PrimaryPhone?.PhoneNumber ?? "-")</MudText>
+        </div>
+    </div>
+</MudPaper>
+<MudPaper Class="pa-4">
+    <MudText Typo="Typo.subtitle1">Contact details</MudText>
+    <div class="d-flex mb-4">
+        <MudIcon Icon="@Icons.Material.Filled.Email" Class="mr-4"></MudIcon>
+        <div>
+            @if (Contact?.Emails != null && Contact.Emails.Any())
+            {
+                @foreach (var email in Contact?.Emails ?? Array.Empty<EmailAddress>())
+                {
+                    <MudText Typo="Typo.body1">@email.Email</MudText>
+                }
+            }
+            else
+            {
+                <MudLink Href="#">Add email</MudLink>
+            }
+        </div>
+    </div>
+    
+    <div class="d-flex">
+        <MudIcon Icon="@Icons.Material.Filled.Phone" Class="mr-4"></MudIcon>
+        <div>
+            @if (Contact?.Phones != null && Contact.Phones.Any())
+            {
+                @foreach (var phone in Contact?.Phones ?? Array.Empty<Phone>())
+                {
+                    <MudText Typo="Typo.body1">@phone.PhoneNumber</MudText>
+                }
+            }
+            else
+            {
+                <MudLink Href="#">Add phone</MudLink>
+            }
+        </div>
+    </div>
+</MudPaper>
+
 @code {
-    [Parameter]
-    public string? ContactId { get; set; }
+    [Parameter] public string? ContactId { get; set; }
+
+    public Contact? Contact { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.ToApplicationUser();
+        if (ContactId == null) throw new Exception("ContactId is required.");
+
+        Contact = await ContactService.GetContact(user.Id, ContactId);
+    }
+
 }

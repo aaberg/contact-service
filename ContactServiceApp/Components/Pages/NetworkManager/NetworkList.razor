@@ -10,39 +10,57 @@
 
 @attribute [Authorize]
 
-<MudTable T="Contact" Items="@_contacts" Hover="true" RowClass="cursor-pointer" OnRowClick="OnRowClicked">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Contacts</MudText>
-        <MudSpacer />
-        <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Name</MudTh>
-        <MudTh>Email</MudTh>
-        <MudTh>Phone</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Email">@context.PrimaryEmail?.Email</MudTd>
-        <MudTd DataLabel="Phone">@context.PrimaryPhone?.PhoneNumber</MudTd>
-    </RowTemplate>
-</MudTable>
+<section>
+    <h2>Contacts</h2>
+    @foreach (var contact in _contacts)
+    {
+        <MudElement HtmlTag="div" @onclick="@(() => OnRowClicked(contact))" class="d-flex align-center cursor-pointer hover:mud-primary-hover">
+            <MudAvatar Color="Color.Info" Class="ma-2" Size="Size.Medium">
+                @if (contact.ProfilePictureUrl == null)
+                {
+                    @(contact.Name.Length > 2 ? contact.Name.Substring(0, 2) : contact.Name)
+                }
+                else
+                {
+                    <MudImage Src="@contact.ProfilePictureUrl"></MudImage>
+                }
+
+            </MudAvatar>
+            <MudText Typo="Typo.body1">@contact.Name</MudText>
+            @if (contact.PrimaryEmail != null && !string.IsNullOrEmpty(contact.PrimaryEmail.Email))
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Email" Class="ml-5"></MudIcon>
+                <MudText Typo="Typo.body2" Class="ml-1">@contact.PrimaryEmail.Email</MudText>
+            }
+
+            @if (contact.PrimaryPhone != null)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Phone" Class="ml-5"></MudIcon>
+                <MudText Typo="Typo.body2" Class="ml-1">@contact.PrimaryPhone.PhoneNumber</MudText>
+            }
+        </MudElement>
+        <MudDivider/>
+    }
+    <div class="d-flex justify-center mt-2">
+        <MudPagination Color="Color.Primary" Count="4"></MudPagination>
+    </div>
+</section>
 
 @code {
 
     private ImmutableArray<Contact> _contacts = ImmutableArray<Contact>.Empty;
     private string _searchText = "";
-    
+
     protected override async Task OnInitializedAsync()
     {
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.ToApplicationUser();
 
         _contacts = await ContactService.GetAllContacts(user.Id);
     }
-    
-    private void OnRowClicked(TableRowClickEventArgs<Contact> args)
+
+    private void OnRowClicked(Contact contact)
     {
-        NavigationManager.NavigateTo($"/network/{args.Item.Id}");
+        NavigationManager.NavigateTo($"/network/{contact.Id}");
     }
 
 }

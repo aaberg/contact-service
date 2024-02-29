@@ -2,12 +2,16 @@
 @using ContactServiceApp.Contacts
 @using ContactServiceApp.Identity
 @using ContactServiceGrainInterfaces.Contact
-@using ContactServiceApp.Components.Contact
 @inject ContactService ContactService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-<h3>ContactDetails</h3>
 
-<p>@ContactId</p>
+<div class="d-flex">
+    <MudLink Href="/network" Class="d-inline-block pa-4 hover:mud-primary-hover">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowBackIos"></MudIcon>
+    </MudLink>
+    <MudSpacer></MudSpacer>
+    <MudLink Href="@($"network/{ContactId}/edit")" Class="pa-4"><MudButton Variant="Variant.Text">Edit</MudButton></MudLink>
+</div>
 
 <MudPaper Class="pa-4 mb-5">
     <MudText Typo="Typo.h2">@Contact?.Name</MudText>
@@ -31,15 +35,21 @@
             {
                 <MudText Typo="Typo.body1">@email.Email</MudText>
             }
+        </div>
+    </div>
 
-            <MudLink Href="#">Add email</MudLink>
+    <div class="d-flex">
+        <MudIcon Icon="@Icons.Material.Filled.Phone" Class="mr-4"></MudIcon>
+        <div>
+            @foreach (var phone in Contact?.Phones ?? Array.Empty<Phone>())
+            {
+                <MudText Typo="Typo.body1" Class="">@phone.PhoneNumber</MudText>
+            }
 
         </div>
     </div>
-    
-    <PhoneNumbers Contact="Contact" GetUserFunc="User" OnPhoneChanged="LoadContact"></PhoneNumbers>
 
-    
+
 </MudPaper>
 
 @code {

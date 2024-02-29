@@ -10,11 +10,11 @@
 
 @attribute [Authorize]
 
-<section>
-    <h2>Contacts</h2>
+<section class="pa-0">
+    <h2 class="mx-4">Contacts</h2>
     @foreach (var contact in _contacts)
     {
-        <MudElement HtmlTag="div" @onclick="@(() => OnRowClicked(contact))" class="d-flex align-center cursor-pointer hover:mud-primary-hover">
+        <MudElement HtmlTag="div" @onclick="@(() => OnRowClicked(contact))" class="d-flex align-center cursor-pointer hover:mud-primary-hover px-4">
             <MudAvatar Color="Color.Info" Class="ma-2" Size="Size.Medium">
                 @if (contact.ProfilePictureUrl == null)
                 {
@@ -29,14 +29,14 @@
             <MudText Typo="Typo.body1">@contact.Name</MudText>
             @if (contact.PrimaryEmail != null && !string.IsNullOrEmpty(contact.PrimaryEmail.Email))
             {
-                <MudIcon Icon="@Icons.Material.Filled.Email" Class="ml-5"></MudIcon>
-                <MudText Typo="Typo.body2" Class="ml-1">@contact.PrimaryEmail.Email</MudText>
+                <MudIcon Icon="@Icons.Material.Filled.Email" Class="ml-5 d-none d-sm-inline"></MudIcon>
+                <MudText Typo="Typo.body2" Class="ml-1 d-none d-sm-inline">@contact.PrimaryEmail.Email</MudText>
             }
 
             @if (contact.PrimaryPhone != null)
             {
-                <MudIcon Icon="@Icons.Material.Filled.Phone" Class="ml-5"></MudIcon>
-                <MudText Typo="Typo.body2" Class="ml-1">@contact.PrimaryPhone.PhoneNumber</MudText>
+                <MudIcon Icon="@Icons.Material.Filled.Phone" Class="ml-5 d-none d-sm-inline"></MudIcon>
+                <MudText Typo="Typo.body2" Class="ml-1 d-none d-sm-inline">@contact.PrimaryPhone.PhoneNumber</MudText>
             }
         </MudElement>
         <MudDivider/>

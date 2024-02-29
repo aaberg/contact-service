@@ -1,6 +1,6 @@
 ﻿namespace ContactServiceServer.Infrastructure;
 
-public class OrleansConfiguration
+public class DatabaseConfiguration
 {
     public string ConnectionString { get; set; }
 }

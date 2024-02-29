@@ -5,19 +5,13 @@ using ContactServiceServer.Exceptions;
 
 namespace ContactServiceServer.Grains.Contact;
 
-public class ContactGrain : Grain, IContactGrain
+public class ContactGrain(IContactAccess contactAccess) : Grain, IContactGrain
 {
-    private readonly IContactAccess _contactAccess;
     private ContactState? _state;
-    
-    public ContactGrain(IContactAccess contactAccess)
-    {
-        _contactAccess = contactAccess;
-    }
 
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
-        _state = await _contactAccess.LoadStateAsync(this.GetPrimaryKey()); 
+        _state = await contactAccess.LoadStateAsync(this.GetPrimaryKey()); 
         
         await base.OnActivateAsync(cancellationToken);
     }
@@ -121,6 +115,6 @@ public class ContactGrain : Grain, IContactGrain
         {
             throw new DomainException("Cant save Contact without state");
         }
-        await _contactAccess.SaveStateAsync(this.GetPrimaryKey(), _state);
+        await contactAccess.SaveStateAsync(this.GetPrimaryKey(), _state);
     }
 }

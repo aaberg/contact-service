@@ -25,10 +25,10 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .CreateLogger();
 
-var orleansConfiguration = new OrleansConfiguration();
-configuration.GetRequiredSection("Orleans").Bind(orleansConfiguration);
+var databaseConfiguration = new DatabaseConfiguration();
+configuration.GetRequiredSection("Database").Bind(databaseConfiguration);
 
-new OrleansMigrations(orleansConfiguration, Log.Logger).Migrate();
+new OrleansMigrations(databaseConfiguration, Log.Logger).Migrate();
 
 var hostBuilder = Host.CreateDefaultBuilder(args);
 
@@ -47,7 +47,7 @@ hostBuilder
             .AddAdoNetGrainStorage(Stores.Default, options =>
             {
                 options.Invariant = "Npgsql";
-                options.ConnectionString = orleansConfiguration.ConnectionString;
+                options.ConnectionString = databaseConfiguration.ConnectionString;
             })
             .ConfigureServices(services =>
             {
@@ -59,7 +59,7 @@ hostBuilder
                         options
                             .RegisterTenantAccessSchema()
                             .RegisterContactSchema()
-                            .Connection(orleansConfiguration.ConnectionString);
+                            .Connection(databaseConfiguration.ConnectionString);
 
                         if (environment == "Development")
                         {

@@ -7,10 +7,10 @@ namespace ContactServiceServer.Db;
 
 public class OrleansMigrations
 {
-    private readonly OrleansConfiguration _configuration;
+    private readonly DatabaseConfiguration _configuration;
     private readonly ILogger _log;
 
-    public OrleansMigrations(OrleansConfiguration configuration, ILogger logger)
+    public OrleansMigrations(DatabaseConfiguration configuration, ILogger logger)
     {
         _configuration = configuration;
         _log = logger;
